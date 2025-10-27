@@ -5,7 +5,7 @@ import os
 import json
 
 from . import notas
-from . import init
+from .__init__ import GlobalPlugin
 from .progress import ReadingProgressManager
 
 class Biblias:
@@ -319,7 +319,7 @@ class Biblias:
         button.GetParent().PopupMenu(menu, menu_pos)
 
     def menuInicial(self, frame_atual):
-        menu = init.GlobalPlugin()
+        menu = GlobalPlugin()
         menu.exibirMenu()
         frame_atual.Destroy()
 
@@ -330,7 +330,7 @@ class Biblias:
             livro = self.livro_selecionado["name"]  # Nome do livro selecionado
             capitulo = self.capitulo_selecionado + 1  # Capítulo (ajustado para começar de 1)
             versiculos = self.livro_selecionado["chapters"][self.capitulo_selecionado]  # Todos os versículos do capítulo
-            notas_manager = notas.NotasManager(versao, livro, capitulo, versiculos)  # Passa os argumentos para o NotasManager
+            notas_manager = notas.NotasManager(versao, livro, capitulo, versiculos, self)  # Passa os argumentos para o NotasManager
         except AttributeError as e:
             wx.MessageBox(f"Erro ao criar nota: {e}", "Erro", wx.OK | wx.ICON_ERROR)
 

@@ -1,11 +1,13 @@
 import wx
 import ui
 import globalPluginHandler
-from . import biblia
+
+#from . import bible
 from . import notas
+#from .  import bible
 
 class GlobalPlugin(globalPluginHandler.GlobalPlugin):
-    def script_init(self, gesture):
+    def script_openBibleMenu(self, gesture):
         self.showMenu()
 
     def showMenu(self):
@@ -38,9 +40,9 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         self.dialog.ShowModal()
 
     def abrirBiblia(self, event):
-        """Abre a funcionalidade da Bíblia."""
+        from .biblia import Biblias
         try:
-            biblia_init = biblia.Biblias()
+            biblia_init = Biblias()  # ✅ chama direto a classe importada
             biblia_init.script_openBible()
         except Exception as e:
             wx.MessageBox(f"Erro ao abrir a Bíblia: {str(e)}", "Erro", wx.OK | wx.ICON_ERROR)
@@ -50,14 +52,14 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
     def abrirAnotacoes(self, event):
         """Abre a funcionalidade de anotações."""
         try:
-            notas_init = notas.NotasStorage()
-            notas_init.exibirNotas()  # Método esperado para exibir ou gerenciar anotações
+            notas_init = notas.NotasStorage(self)  # ✅ passa referência do menu
+            notas_init.exibirNotas()
         except Exception as e:
             wx.MessageBox(f"Erro ao abrir as anotações: {str(e)}", "Erro", wx.OK | wx.ICON_ERROR)
         finally:
-            self.dialog.Destroy()  # Fecha o menu após a seleção
+            self.dialog.Destroy()
 
     # Mapeia o gesto para chamar o método 'script_init'
     __gestures = {
-        "kb:NVDA+shift+i": "init"
+        "kb:NVDA+shift+i": "openBibleMenu"
     }
