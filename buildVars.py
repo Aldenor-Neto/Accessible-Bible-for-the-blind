@@ -30,9 +30,9 @@ Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""),
 	# Author(s)
 	"addon_author": "Aldenor Neto <aldenor05062010@gmail.com>",
 	# URL for the add-on documentation support
-	"addon_url": None,
+	"addon_url": "https://github.com/Aldenor-Neto/Accessible-Bible-for-the-blind/blob/main/readme.md",
 	# URL for the add-on repository where the source code can be found
-	"addon_sourceURL": None,
+	"addon_sourceURL": "https://github.com/Aldenor-Neto/Accessible-Bible-for-the-blind",
 	# Documentation file name
 	"addon_docFileName": "readme.md",
 	# Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
@@ -46,7 +46,7 @@ Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""),
 	# Add-on license such as GPL 2
 	"addon_license": "GPL 2",
 	# URL for the license document the ad-on is licensed under
-	"addon_licenseURL": None,
+	"addon_licenseURL": "https://www.gnu.org/licenses/gpl-2.0.html",
 }
 
 # Define the python files that are the sources of your add-on.
