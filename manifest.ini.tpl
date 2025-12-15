@@ -1,4 +1,4 @@
-name = "Biblia-Acessivel"
+name = "biblia-acessivel"
 summary = "Accessible Bible Blind"
 description = """A Palavra de Deus com total acessibilidade e com diferentes versões para seu estudo e intimidade com Deus.
 Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""
