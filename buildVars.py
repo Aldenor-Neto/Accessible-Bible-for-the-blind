@@ -26,7 +26,7 @@ addon_info = {
 	"addon_description": _("""A Palavra de Deus com total acessibilidade e com diferentes versões para seu estudo e intimidade com Deus.
 Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""),
 	# version
-	"addon_version": "2.1",
+	"addon_version": "2.2",
 	# Author(s)
 	"addon_author": "Aldenor Neto <aldenor05062010@gmail.com>",
 	# URL for the add-on documentation support

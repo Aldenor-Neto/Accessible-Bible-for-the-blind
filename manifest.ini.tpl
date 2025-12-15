@@ -1,10 +1,10 @@
-name = "Bíblia Acessível"
+name = "Biblia-Acessivel"
 summary = "Accessible Bible Blind"
 description = """A Palavra de Deus com total acessibilidade e com diferentes versões para seu estudo e intimidade com Deus.
 Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""
 author = "Aldenor Neto <aldenor05062010@gmail.com>"
 url = "https://github.com/Aldenor-Neto/Accessible-Bible-for-the-blind"
-version = "2.1"
+version = "2.2"
 docFileName = "readme.md"
 minimumNVDAVersion = "2022.4"
 lastTestedNVDAVersion = "2025.3"
