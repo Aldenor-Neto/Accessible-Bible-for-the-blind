@@ -1,1 +1,18 @@
-[]
+[
+    {
+        "titulo": "pentecostes",
+        "versao": "Ave Maria",
+        "livro": "Atos dos Apóstolos",
+        "capitulo": 2,
+        "versiculos": [],
+        "descricao": "O espirito santo repousa sobre os dicipulos em pentecostes e todos compreendem em sua propria lingua, havia povos de varias nações."
+    },
+    {
+        "titulo": "escolha de Matias",
+        "versao": "Ave Maria",
+        "livro": "Atos dos Apóstolos",
+        "capitulo": 1,
+        "versiculos": [],
+        "descricao": "com a morte de Judas foi escolhido um novo discipulo para oculpar seu lugar\ncomo nos mostra o trecho de atos capítulo 1 verso 26. Deitaram sorte e caiu a sorte em Matias, que foi incorporado aos onze apóstolos."
+    }
+]

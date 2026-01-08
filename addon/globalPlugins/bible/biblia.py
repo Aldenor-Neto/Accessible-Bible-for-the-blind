@@ -66,13 +66,17 @@ class Biblias:
         # Dados organizados por religião
         religioes = {
             "Católica": [
+                "Pastoral",
                 "Ave Maria",
-                "Jerusalém"
+                "Jerusalém",
+                "CNBB"
             ],
             "Evangélica": [
                 "Almeida Corrigida e Fiel(ACF)",
-                "Almeida Revista Atualizada(AA)",
-                "Nova Versão Internacional(NVI)"
+                "Almeida Revista Atualizada(ARA)",
+                "Almeida Revista e Corrigida(ARC)",
+                "Nova Versão Internacional(NVI)",
+                "Nova Tradução na Linguagem de Hoje(NTLH)"
             ],
             "Testemunha de Jeová": [
                 "Tradução do novo mundo"
@@ -81,11 +85,15 @@ class Biblias:
 
         # Mapeamento de arquivos
         self.json_files = {
+            "Pastoral": "catolica - pastoral.json",
             "Ave Maria": "catolica - Ave Maria.json",
             "Jerusalém": "catolica - jerusalem.json",
+            "CNBB": "catolica - CNBB.json",
             "Almeida Corrigida e Fiel(ACF)": "evangelica - Almeida Corrigida e Fiel(ACF).json",
-            "Almeida Revista Atualizada(AA)": "evangelica - Almeida Revista Atualizada(AA).json",
+            "Almeida Revista Atualizada(ARA)": "evangelica - Almeida Revista Atualizada(ARA).json",
+            "Almeida Revista e Corrigida(ARC)": "evangelica - Almeida Revista e corrigida(ARC).json",
             "Nova Versão Internacional(NVI)": "evangelica - Nova Versão Internacional(NVI).json",
+            "Nova Tradução na Linguagem de Hoje(NTLH)": "evangelica - Nova Tradução na Linguagem de Hoje(NTLH).json",
             "Tradução do novo mundo": "testemunha de jeova - traducao do novo mundo.json"
         }
 
