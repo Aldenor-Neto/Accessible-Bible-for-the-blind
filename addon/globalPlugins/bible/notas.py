@@ -1,4 +1,5 @@
 import wx
+import ui
 import json
 import os
 import globalPluginHandler
@@ -69,103 +70,79 @@ class NotasStorage:
         panel = wx.Panel(frame)
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        self.frame.Close()
+        if hasattr(self, "frame") and self.frame:
+            try:
+                if self.frame.IsShown():
+                    self.frame.Close()
+            except RuntimeError:
+                pass
 
-        conteudo = f"Título: {nota['titulo']}\nVersão: {nota['versao']}\n"
+
+        conteudo = f"Título: {nota['titulo']}\n"
+        conteudo += f"Versão: {nota['versao']}\n"
         conteudo += f"{nota['livro']} {nota['capitulo']}\n\n"
+
         if nota.get('versiculos'):
-            conteudo += "Versículos:\n" + "\n".join([f"{v['numero']}. {v['texto']}" for v in nota['versiculos']]) + "\n\n"
-        conteudo += f"Descrição:\n{nota['descricao']}"
+            conteudo += "Versículos:\n"
+            for v in nota['versiculos']:
+                conteudo += f"{v['numero']}. {v['texto']}\n"
 
-        txt_conteudo = wx.TextCtrl(panel, value=conteudo, style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL)
-        sizer.Add(txt_conteudo, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
+        conteudo += f"\nDescrição:\n{nota['descricao']}"
 
+        txt_conteudo = wx.TextCtrl(
+            panel,
+            value=conteudo,
+            style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL
+        )
+
+        sizer.Add(txt_conteudo, 1, wx.EXPAND | wx.ALL, 10)
+
+        # -------------------------
+        # BOTÕES
+        # -------------------------
         btn_editar = wx.Button(panel, label="Editar")
         btn_excluir = wx.Button(panel, label="Excluir")
         btn_lista = wx.Button(panel, label="Lista de Notas")
         btn_fechar = wx.Button(panel, label="Fechar")
 
         sizer_botoes = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_botoes.Add(btn_editar, flag=wx.RIGHT, border=5)
-        sizer_botoes.Add(btn_excluir, flag=wx.LEFT, border=5)
-        sizer_botoes.Add(btn_lista, flag=wx.LEFT, border=5)  
-        sizer_botoes.Add(btn_fechar, flag=wx.LEFT, border=5)
-        sizer.Add(sizer_botoes, flag=wx.ALIGN_CENTER | wx.ALL, border=10)
+        sizer_botoes.Add(btn_editar, 0, wx.RIGHT, 5)
+        sizer_botoes.Add(btn_excluir, 0, wx.LEFT, 5)
+        sizer_botoes.Add(btn_lista, 0, wx.LEFT, 5)
+        sizer_botoes.Add(btn_fechar, 0, wx.LEFT, 5)
 
-        def habilitarEdicao(event):
-            """Habilita a edição da nota."""
-            btn_lista.Hide()
+        sizer.Add(sizer_botoes, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
-            txt_conteudo.SetEditable(True)
-            txt_conteudo.SetStyle(0, txt_conteudo.GetLastPosition(), wx.TextAttr(wx.Colour(0, 0, 0)))  
-            btn_editar.Hide()
-            btn_excluir.Hide()
-            btn_fechar.Hide()
-
-            btn_salvar = wx.Button(panel, label="Salvar Alteração")
-            btn_cancelar = wx.Button(panel, label="Cancelar")
-            sizer_botoes.Add(btn_salvar, flag=wx.RIGHT, border=5)
-            sizer_botoes.Add(btn_cancelar, flag=wx.LEFT, border=5)
-            panel.Layout()
-
-            def salvarAlteracao(event):
-                """Salva a alteração feita na nota."""
-                novo_conteudo = txt_conteudo.GetValue()
-                linhas = novo_conteudo.split("\n")
-                nota['descricao'] = "\n".join(linhas[-1:])  
-                self.salvarNotas()  
-                wx.MessageBox("Alteração salva com sucesso!", "Sucesso", wx.OK | wx.ICON_INFORMATION)
-                txt_conteudo.SetEditable(False)
-                btn_salvar.Hide()
-                btn_cancelar.Hide()
-                btn_editar.Show()
-                btn_excluir.Show()
-                btn_fechar.Show()
-                btn_lista.Show()  
-                panel.Layout()
-
-            def cancelarAlteracao(event):
-                """Cancela a alteração e restaura o conteúdo original."""
-                txt_conteudo.SetValue(conteudo)
-                txt_conteudo.SetEditable(False)
-                btn_salvar.Hide()
-                btn_cancelar.Hide()
-                btn_editar.Show()
-                btn_excluir.Show()
-                btn_fechar.Show()
-                btn_lista.Show()  
-                panel.Layout()
-
-            btn_salvar.Bind(wx.EVT_BUTTON, salvarAlteracao)
-            btn_cancelar.Bind(wx.EVT_BUTTON, cancelarAlteracao)
-
-        btn_editar.Bind(wx.EVT_BUTTON, habilitarEdicao)
-
-        def excluirNota(event):
-            """Exclui a nota após confirmação e volta para a lista de notas."""
-            dialogo = wx.MessageDialog(frame,
-                                    "Deseja realmente excluir esta nota? Esta ação não poderá ser desfeita.",
-                                    "Confirmar Exclusão", wx.YES_NO | wx.ICON_WARNING)
-            if dialogo.ShowModal() == wx.ID_YES:
-                self.notas.remove(nota)  
-                self.salvarNotas()  
-                wx.MessageBox("Nota excluída com sucesso!", "Sucesso", wx.OK | wx.ICON_INFORMATION)
-                frame.Close()  
-                self.exibirNotas()  
-
-        btn_excluir.Bind(wx.EVT_BUTTON, excluirNota)
-
-        def voltarParaLista(event):
-            """Fecha a janela de conteúdo e abre a lista de notas novamente."""
+        # -------------------------
+        # AÇÕES
+        # -------------------------
+        def abrir_editor(event):
             frame.Close()
-            self.exibirNotas()  
+            EditorNotaExistente(self, nota, callback_reabrir=self.mostrarNota)
 
-        btn_lista.Bind(wx.EVT_BUTTON, voltarParaLista)  
+        btn_editar.Bind(wx.EVT_BUTTON, abrir_editor)
 
-        btn_fechar.Bind(wx.EVT_BUTTON, lambda event: frame.Close())
+        btn_excluir.Bind(wx.EVT_BUTTON, lambda e: self.excluirNota(frame, nota))
+        btn_lista.Bind(wx.EVT_BUTTON, lambda e: (frame.Close(), self.exibirNotas()))
+        btn_fechar.Bind(wx.EVT_BUTTON, lambda e: frame.Close())
 
         panel.SetSizer(sizer)
         frame.Show()
+
+    def excluirNota(self, frame, nota):
+        dialogo = wx.MessageDialog(
+            frame,
+            "Deseja realmente excluir esta nota? Esta ação não poderá ser desfeita.",
+            "Confirmar Exclusão",
+            wx.YES_NO | wx.ICON_WARNING
+        )
+
+        if dialogo.ShowModal() == wx.ID_YES:
+            self.notas.remove(nota)
+            self.salvarNotas()
+            wx.MessageBox("Nota excluída com sucesso!", "Sucesso", wx.OK | wx.ICON_INFORMATION)
+            frame.Close()
+            self.exibirNotas()
 
 
 class NotasManager:
@@ -175,9 +152,10 @@ class NotasManager:
         self.capitulo = capitulo
         self.versiculos = versiculos
         self.selecionados = []
-        
+        self.titulo = ""  
+
         self.notasStorage = NotasStorage(pluginRef)
-        self.exibirTituloNota(None)
+        self.exibirSelecaoVersiculos()
 
     def exibirSelecaoVersiculos(self):
         frame = wx.Frame(None, title=f"Selecione os versículos - {self.livro} {self.capitulo}", size=(600, 400))
@@ -185,13 +163,15 @@ class NotasManager:
 
         
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.checkbox_list = []  
+        labels = [f"{i + 1}. {texto}" for i, texto in enumerate(self.versiculos)]
 
-        
-        for i, texto in enumerate(self.versiculos):
-            checkbox = wx.CheckBox(panel, label=f"{i + 1}. {texto}")
-            self.checkbox_list.append(checkbox)
-            sizer.Add(checkbox, flag=wx.TOP | wx.LEFT, border=10)
+        self.lista_versiculos = wx.CheckListBox(
+            panel,
+            choices=labels,
+            style=wx.LB_SINGLE
+        )
+
+        sizer.Add(self.lista_versiculos, 1, wx.EXPAND | wx.ALL, 10)
 
         
         btn_avancar = wx.Button(panel, label="Avançar")
@@ -211,16 +191,27 @@ class NotasManager:
         panel.SetSizer(sizer)
         frame.Show()
 
+        btn_avancar.Enable(False)
+
+        def on_check(event):
+            index = event.GetInt()
+            texto = self.lista_versiculos.GetString(index)
+
+            if self.lista_versiculos.IsChecked(index):
+                ui.message("marcado")
+            else:
+                ui.message("desmarcado")
+
+            self.ativarBotaoAvancar(btn_avancar)
+
+        self.lista_versiculos.Bind(wx.EVT_CHECKLISTBOX, on_check)
         
-        for checkbox in self.checkbox_list:
-            checkbox.Bind(wx.EVT_CHECKBOX, lambda event: self.ativarBotaoAvancar(btn_avancar))
 
     def ativarBotaoAvancar(self, btn_avancar):
-        """Ativa o botão de avançar quando pelo menos um versículo for selecionado."""
-        if any(checkbox.IsChecked() for checkbox in self.checkbox_list):
-            btn_avancar.Enable(True)  
+        if self.lista_versiculos.GetCheckedItems():
+            btn_avancar.Enable(True)
         else:
-            btn_avancar.Enable(False)  
+            btn_avancar.Enable(False)
 
     def exibirTituloNota(self, frame_anterior):
         """Exibe a caixa para o usuário inserir o título da nota usando wx.TextEntryDialog.
@@ -231,8 +222,7 @@ class NotasManager:
             try:
                 self.selecionados = [
                     (i + 1, self.versiculos[i])
-                    for i, checkbox in enumerate(self.checkbox_list)
-                    if checkbox.IsChecked()
+                    for i in self.lista_versiculos.GetCheckedItems()
                 ]
                 frame_anterior.Destroy()
             except Exception:
@@ -255,64 +245,191 @@ class NotasManager:
             self.exibirNotaEditavel(titulo)
 
     def exibirNotaEditavel(self, titulo):
-        """Exibe uma janela editável com a nota completa."""
-        frame = wx.Frame(None, title="Editar Nota", size=(600, 400))
+        self.titulo = titulo
+
+        frame = wx.Frame(None, title="Editar Nota", size=(600, 500))
         panel = wx.Panel(frame)
-
-        conteudo = f"{titulo}\nVersão: {self.versao}\n{self.livro} {self.capitulo}\n\n"
-        if self.selecionados:
-            conteudo += "\n".join([f"{num}. {texto}" for num, texto in self.selecionados]) + "\n\n"
-        conteudo += "Adicione suas anotações aqui."
-
         sizer = wx.BoxSizer(wx.VERTICAL)
-        self.txt_nota = wx.TextCtrl(panel, value=conteudo, style=wx.TE_MULTILINE | wx.HSCROLL)
-        sizer.Add(self.txt_nota, proportion=1, flag=wx.EXPAND | wx.ALL, border=10)
 
+        # =========================================================
+        # 🔹 BLOCO DE INFORMAÇÕES (ACESSÍVEL AO NVDA)
+        # =========================================================
+        info = f"Título: {self.titulo}\n"
+        info += f"Versão: {self.versao}\n"
+        info += f"{self.livro} {self.capitulo}\n\n"
+
+        if self.selecionados:
+            info += "Versículos selecionados:\n"
+            for num, texto in self.selecionados:
+                info += f"{num}. {texto}\n"
+
+        txt_info = wx.TextCtrl(
+            panel,
+            value=info,
+            style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL
+        )
+
+        sizer.Add(txt_info, 0, wx.EXPAND | wx.ALL, 10)
+
+        # =========================================================
+        # 🔹 DESCRIÇÃO (EDITÁVEL E LIDA PELO NVDA)
+        # =========================================================
+        self.txt_nota = wx.TextCtrl(
+            panel,
+            value="",
+            style=wx.TE_MULTILINE | wx.HSCROLL
+        )
+
+        sizer.Add(self.txt_nota, 1, wx.EXPAND | wx.ALL, 10)
+
+        # =========================================================
+        # 🔹 BOTÕES
+        # =========================================================
         btn_salvar = wx.Button(panel, label="Salvar Nota")
-        btn_salvar.Bind(wx.EVT_BUTTON, lambda event: self.salvarNota(btn_salvar))
-        
         btn_cancelar = wx.Button(panel, label="Cancelar")
-        btn_cancelar.Bind(wx.EVT_BUTTON, lambda event: self.fecharJanela(frame))
+
+        btn_salvar.Bind(wx.EVT_BUTTON, lambda e: self.salvarNota(frame))
+        btn_cancelar.Bind(wx.EVT_BUTTON, lambda e: frame.Destroy())
 
         btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        btn_sizer.Add(btn_salvar, 0, wx.ALIGN_CENTER | wx.ALL, 10)
-        btn_sizer.Add(btn_cancelar, 0, wx.ALIGN_CENTER | wx.ALL, 10)
-        sizer.Add(btn_sizer, flag=wx.ALIGN_CENTER | wx.TOP, border=10)
+        btn_sizer.Add(btn_salvar, 0, wx.ALL, 10)
+        btn_sizer.Add(btn_cancelar, 0, wx.ALL, 10)
+
+        sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER)
 
         panel.SetSizer(sizer)
         frame.Show()
+
+        # 🔹 garante foco correto para leitura inicial
+        txt_info.SetFocus()
 
     def fecharJanela(self, frame):
         """Fecha a janela de edição sem salvar as alterações."""
         frame.Destroy()
 
-    def salvarNota(self, btn_salvar):
-        """Salva a nota no arquivo JSON e retorna à lista de anotações."""
-        titulo = self.txt_nota.GetValue().split("\n")[0]
-        descricao = self.txt_nota.GetValue().split("\n\n")[-1]
+    def salvarNota(self, frame):
+        descricao = self.txt_nota.GetValue().strip()
+
+        if not descricao:
+            wx.MessageBox(
+                "A descrição não pode estar vazia.",
+                "Erro",
+                wx.OK | wx.ICON_ERROR
+            )
+            return
+
         nota = {
-            "titulo": titulo,
+            "titulo": self.titulo,
             "versao": self.versao,
             "livro": self.livro,
             "capitulo": self.capitulo,
-            "versiculos": [{"numero": num, "texto": texto} for num, texto in self.selecionados],
-            "descricao": descricao.strip(),
+            "versiculos": [
+                {"numero": num, "texto": texto}
+                for num, texto in self.selecionados
+            ],
+            "descricao": descricao
         }
 
-        caminho = os.path.join(os.path.dirname(__file__), "dados", "notas.json")
-        if os.path.exists(caminho):
-            with open(caminho, "r", encoding="utf-8") as f:
-                dados = json.load(f)
-        else:
-            dados = []
+        self.notasStorage.adicionarNota(nota)
 
-        dados.append(nota)
+        wx.MessageBox(
+            "Nota salva com sucesso!",
+            "Confirmação",
+            wx.OK | wx.ICON_INFORMATION
+        )
 
-        with open(caminho, "w", encoding="utf-8") as f:
-            json.dump(dados, f, indent=4, ensure_ascii=False)
+        frame.Destroy()
 
-        wx.MessageBox("Nota salva com sucesso!", "Confirmação", wx.OK | wx.ICON_INFORMATION)
+class EditorNotaExistente:
+    def __init__(self, storage, nota, callback_reabrir=None):
+        self.storage = storage
+        self.nota = nota
+        self.callback_reabrir = callback_reabrir
+        self.exibirTela()
 
-        frame_atual = btn_salvar.GetParent().GetTopLevelParent()
-        frame_atual.Destroy()
+    def exibirTela(self):
+        self.frame = wx.Frame(
+            None,
+            title=f"Editar Nota: {self.nota['titulo']}",
+            size=(600, 500)
+        )
+        panel = wx.Panel(self.frame)
+        sizer = wx.BoxSizer(wx.VERTICAL)
 
+        # =========================================
+        # 🔹 INFORMAÇÕES FIXAS (SOMENTE LEITURA)
+        # =========================================
+        info = f"Título: {self.nota['titulo']}\n"
+        info += f"Versão: {self.nota['versao']}\n"
+        info += f"{self.nota['livro']} {self.nota['capitulo']}\n\n"
+
+        if self.nota.get("versiculos"):
+            info += "Versículos:\n"
+            for v in self.nota["versiculos"]:
+                info += f"{v['numero']}. {v['texto']}\n"
+
+        txt_info = wx.TextCtrl(
+            panel,
+            value=info,
+            style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL
+        )
+
+        sizer.Add(txt_info, 0, wx.EXPAND | wx.ALL, 10)
+
+        # =========================================
+        # 🔹 DESCRIÇÃO (EDITÁVEL, JÁ PREENCHIDA)
+        # =========================================
+        self.txt_descricao = wx.TextCtrl(
+            panel,
+            value=self.nota["descricao"],
+            style=wx.TE_MULTILINE | wx.HSCROLL
+        )
+
+        sizer.Add(self.txt_descricao, 1, wx.EXPAND | wx.ALL, 10)
+
+        # =========================================
+        # 🔹 BOTÕES
+        # =========================================
+        btn_salvar = wx.Button(panel, label="Salvar Alteração")
+        btn_cancelar = wx.Button(panel, label="Cancelar")
+
+        btn_salvar.Bind(wx.EVT_BUTTON, self.salvar)
+        btn_cancelar.Bind(wx.EVT_BUTTON, lambda e: self.frame.Destroy())
+
+        btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        btn_sizer.Add(btn_salvar, 0, wx.ALL, 10)
+        btn_sizer.Add(btn_cancelar, 0, wx.ALL, 10)
+
+        sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER)
+
+        panel.SetSizer(sizer)
+        self.frame.Show()
+
+        # foco correto para NVDA
+        txt_info.SetFocus()
+
+    def salvar(self, event):
+        nova_descricao = self.txt_descricao.GetValue().strip()
+
+        if not nova_descricao:
+            wx.MessageBox(
+                "A descrição não pode estar vazia.",
+                "Erro",
+                wx.OK | wx.ICON_ERROR
+            )
+            return
+
+        self.nota["descricao"] = nova_descricao
+        self.storage.salvarNotas()
+
+        wx.MessageBox(
+            "Nota atualizada com sucesso!",
+            "Sucesso",
+            wx.OK | wx.ICON_INFORMATION
+        )
+
+        self.frame.Destroy()
+
+        # 🔹 REABRE A NOTA PARA LEITURA
+        if self.callback_reabrir:
+            wx.CallLater(0, self.callback_reabrir, self.nota)

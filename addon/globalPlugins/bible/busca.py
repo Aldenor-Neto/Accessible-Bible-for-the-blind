@@ -3,6 +3,7 @@ import os
 import json
 import ui
 
+
 class BuscaBiblica:
     def __init__(
         self,
@@ -109,3 +110,4 @@ class BuscaBiblica:
         btn_voltar.Bind(wx.EVT_BUTTON, voltar)
 
         frame.Show()
+

@@ -202,69 +202,91 @@ class Biblias:
         btn.PopupMenu(menu)
 
     def abrirJanelaBusca(self, frame_pai):
-        frame = wx.Frame(frame_pai, title="Buscar Trecho Bíblico", size=(450, 400))
+        frame = wx.Frame(frame_pai, title="Buscar Trecho Bíblico", size=(500, 450))
         panel = wx.Panel(frame)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
+        # Campo de busca
         txt_busca = wx.TextCtrl(panel, style=wx.TE_PROCESS_ENTER)
         txt_busca.SetHint("Digite uma palavra ou trecho bíblico")
-
         sizer.Add(txt_busca, 0, wx.EXPAND | wx.ALL, 10)
 
-        sizer.Add(wx.StaticText(panel, label="Buscar nas versões:"), 0, wx.LEFT | wx.TOP, 10)
+        sizer.Add(
+            wx.StaticText(panel, label="Buscar nas versões:"),
+            0,
+            wx.LEFT | wx.TOP,
+            10
+        )
 
-        # CHECKBOXES
-        self.checkboxes_busca = {}
+        versoes = list(self.json_files.keys())
 
-        for versao in self.json_files.keys():
-            cb = wx.CheckBox(panel, label=versao)
-            cb.SetValue(True)  # TODAS MARCADAS POR PADRÃO
-            self.checkboxes_busca[versao] = cb
-            sizer.Add(cb, 0, wx.LEFT | wx.TOP, 10)
+        lista_versoes = wx.CheckListBox(
+            panel,
+            choices=versoes,
+            style=wx.LB_SINGLE
+        )
 
+        # Todas marcadas por padrão
+        for i in range(len(versoes)):
+            lista_versoes.Check(i)
+
+        def on_check(event):
+            index = event.GetInt()
+            nome = lista_versoes.GetString(index)
+
+            if lista_versoes.IsChecked(index):
+                ui.message("marcado")
+            else:
+                ui.message("desmarcado")
+
+        lista_versoes.Bind(wx.EVT_CHECKLISTBOX, on_check)
+
+        # Botões
         btn_buscar = wx.Button(panel, label="Buscar")
         btn_voltar = wx.Button(panel, label="Voltar ao Menu Bíblia")
-        sizer.Add(btn_voltar, 0, wx.EXPAND | wx.ALL, 10)
 
-        sizer.Add(btn_buscar, 0, wx.EXPAND | wx.ALL, 15)
+        btn_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        btn_sizer.Add(btn_voltar, 0, wx.RIGHT, 10)
+        btn_sizer.Add(btn_buscar, 0)
+
+        sizer.Add(btn_sizer, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
         panel.SetSizer(sizer)
 
-        # Eventos
-        txt_busca.Bind(wx.EVT_TEXT_ENTER, lambda e: self.executarBusca(txt_busca.GetValue(), frame))
-        btn_buscar.Bind(wx.EVT_BUTTON, lambda e: self.executarBusca(txt_busca.GetValue(), frame))
-        btn_voltar.Bind(
-    wx.EVT_BUTTON,
-    lambda e, f=frame: (f.Destroy(), self.menuBiblia())
-)
+        # -------------------------
+        # FUNÇÃO INTERNA (CORRETO)
+        # -------------------------
+        def executarBusca():
+            termo = txt_busca.GetValue().strip()
 
+            if not termo:
+                ui.message("Digite algo para buscar.")
+                return
+
+            indices = lista_versoes.GetCheckedItems()
+            if not indices:
+                ui.message("Selecione ao menos uma versão para buscar.")
+                return
+
+            versoes_selecionadas = [versoes[i] for i in indices]
+
+            BuscaBiblica(
+                frame,  
+                termo,
+                self.json_files,
+                versoes_selecionadas,
+                self.abrirResultadoBusca,
+                self.menuBiblia
+            )
+
+        # Eventos
+        txt_busca.Bind(wx.EVT_TEXT_ENTER, lambda e: executarBusca())
+        btn_buscar.Bind(wx.EVT_BUTTON, lambda e: executarBusca())
+        btn_voltar.Bind(wx.EVT_BUTTON, lambda e: (frame.Destroy(), self.menuBiblia()))
 
         frame.Show()
         txt_busca.SetFocus()
-
-    def executarBusca(self, termo, frame):
-        termo = termo.strip()
-        if not termo:
-            ui.message("Digite algo para buscar.")
-            return
-
-        versoes_selecionadas = [
-            versao for versao, cb in self.checkboxes_busca.items() if cb.GetValue()
-        ]
-
-        if not versoes_selecionadas:
-            ui.message("Selecione ao menos uma versão para buscar.")
-            return
-
-        BuscaBiblica(
-            frame,
-            termo,
-            self.json_files,
-            versoes_selecionadas,
-            self.abrirResultadoBusca,
-            self.menuBiblia
-        )
 
     def selecionarVersao(self, versao, frame):
         """Processa a versão selecionada e continua o fluxo."""
@@ -491,4 +513,5 @@ class Biblias:
         """Fecha a janela atual e retorna ao menu inicial para selecionar a versão da Bíblia."""
         frame_atual.Destroy()
         wx.CallAfter(self.selecionaVersao)
+
 
