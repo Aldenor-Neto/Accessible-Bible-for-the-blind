@@ -7,13 +7,28 @@ import json
 from . import notas
 from .__init__ import GlobalPlugin
 from .progress import ReadingProgressManager
+from .busca import BuscaBiblica
+
 
 class Biblias:
     def __init__(self):
         self.progress_manager = ReadingProgressManager()
+
+        self.json_files = {
+            "Pastoral": "catolica - pastoral.json",
+            "Ave Maria": "catolica - Ave Maria.json",
+            "Jerusalém": "catolica - jerusalem.json",
+            "CNBB": "catolica - CNBB.json",
+            "Almeida Corrigida e Fiel(ACF)": "evangelica - Almeida Corrigida e Fiel(ACF).json",
+            "Almeida Revista Atualizada(ARA)": "evangelica - Almeida Revista Atualizada(ARA).json",
+            "Almeida Revista e Corrigida(ARC)": "evangelica - Almeida Revista e corrigida(ARC).json",
+            "Nova Versão Internacional(NVI)": "evangelica - Nova Versão Internacional(NVI).json",
+            "Nova Tradução na Linguagem de Hoje(NTLH)": "evangelica - Nova Tradução na Linguagem de Hoje(NTLH).json",
+            "Tradução do novo mundo": "testemunha de jeova - traducao do novo mundo.json"
+        }
     
     def script_openBible(self):
-        self.selecionaVersao()
+        self.menuBiblia()
     
     
     
@@ -58,6 +73,7 @@ class Biblias:
         except Exception as e:
             wx.MessageBox(f"Erro ao continuar leitura: {e}", "Erro", wx.OK | wx.ICON_ERROR)
 
+
     def selecionaVersao(self):
         """Exibe uma interface com botões que abrem menus para selecionar a versão da Bíblia."""
         frame = wx.Frame(None, title="Selecione a Versão da Bíblia", size=(400, 350))
@@ -100,18 +116,6 @@ class Biblias:
         # Layout principal
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        # Botão "Continuar Leitura" se houver progresso salvo
-        progresso_atual = self.progress_manager.get_progress()
-        if progresso_atual:
-            progresso = progresso_atual
-            btn_continuar = wx.Button(panel, label=f"Continuar Leitura - {progresso['livro']} Capítulo {progresso['capitulo']}")
-            # Passa o frame atual para garantir fechamento ao continuar
-            btn_continuar.Bind(wx.EVT_BUTTON, lambda event, f=frame: self.continuarLeitura(f))
-            sizer.Add(btn_continuar, flag=wx.ALL | wx.EXPAND, border=10)
-            
-            # Linha separadora
-            sizer.Add(wx.StaticLine(panel), flag=wx.EXPAND | wx.LEFT | wx.RIGHT, border=10)
-
         # Criar botões para cada religião
         for religiao, versoes in religioes.items():
             btn_religiao = wx.Button(panel, label=religiao)
@@ -132,9 +136,135 @@ class Biblias:
         panel.SetSizer(sizer)
         frame.Show()
 
+    def menuBiblia(self):
+        frame = wx.Frame(None, title="Bíblia", size=(450, 250))
+        panel = wx.Panel(frame)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        progresso = self.progress_manager.get_progress()
+
+        # 1️⃣ Continuar leitura
+        if progresso:
+            btn_continuar = wx.Button(
+                panel,
+                label=f"Continuar leitura - {progresso['livro']} {progresso['capitulo']}"
+            )
+            sizer.Add(btn_continuar, 0, wx.EXPAND | wx.ALL, 10)
+            sizer.Add(wx.StaticLine(panel), 0, wx.EXPAND | wx.ALL, 5)
+            btn_continuar.Bind(wx.EVT_BUTTON, lambda e: self.continuarLeitura(frame))
+
+        # 2️⃣ Selecionar versão
+        btn_selecionar = wx.Button(panel, label="Selecionar Versão")
+        sizer.Add(btn_selecionar, 0, wx.EXPAND | wx.ALL, 10)
+        sizer.Add(wx.StaticLine(panel), 0, wx.EXPAND | wx.ALL, 5)
+
+        # 3️⃣ Buscar por trecho
+        btn_buscar = wx.Button(panel, label="Buscar por Trecho")
+        sizer.Add(btn_buscar, 0, wx.EXPAND | wx.ALL, 10)
+
+        panel.SetSizer(sizer)
+
+        btn_selecionar.Bind(
+    wx.EVT_BUTTON,
+    lambda e, f=frame: (f.Destroy(), self.selecionaVersao())
+)
+        btn_buscar.Bind(
+    wx.EVT_BUTTON,
+    lambda e, f=frame: (f.Destroy(), self.abrirJanelaBusca(None))
+)
+
+        frame.Show()
+
+    def abrirResultadoBusca(self, resultado):
+        self.versao_selecionada = resultado["versao"]
+
+        caminho = os.path.join(
+            os.path.dirname(__file__),
+            "dados",
+            "versions",
+            self.json_files[self.versao_selecionada]
+        )
+
+        with open(caminho, "r", encoding="utf-8-sig") as f:
+            self.biblia = json.load(f)
+
+        self.livro_selecionado = next(
+            l for l in self.biblia if l["name"] == resultado["livro"]
+        )
+        self.capitulo_selecionado = resultado["capitulo"]
+        self.versiculo_inicial = resultado["versiculo"]
+
+        wx.CallAfter(self.exibirCapitulo)
+
     def exibirMenu(self, btn, menu):
         """Exibe o menu na posição do botão."""
         btn.PopupMenu(menu)
+
+    def abrirJanelaBusca(self, frame_pai):
+        frame = wx.Frame(frame_pai, title="Buscar Trecho Bíblico", size=(450, 400))
+        panel = wx.Panel(frame)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+
+        txt_busca = wx.TextCtrl(panel, style=wx.TE_PROCESS_ENTER)
+        txt_busca.SetHint("Digite uma palavra ou trecho bíblico")
+
+        sizer.Add(txt_busca, 0, wx.EXPAND | wx.ALL, 10)
+
+        sizer.Add(wx.StaticText(panel, label="Buscar nas versões:"), 0, wx.LEFT | wx.TOP, 10)
+
+        # CHECKBOXES
+        self.checkboxes_busca = {}
+
+        for versao in self.json_files.keys():
+            cb = wx.CheckBox(panel, label=versao)
+            cb.SetValue(True)  # TODAS MARCADAS POR PADRÃO
+            self.checkboxes_busca[versao] = cb
+            sizer.Add(cb, 0, wx.LEFT | wx.TOP, 10)
+
+        btn_buscar = wx.Button(panel, label="Buscar")
+        btn_voltar = wx.Button(panel, label="Voltar ao Menu Bíblia")
+        sizer.Add(btn_voltar, 0, wx.EXPAND | wx.ALL, 10)
+
+        sizer.Add(btn_buscar, 0, wx.EXPAND | wx.ALL, 15)
+
+        panel.SetSizer(sizer)
+
+        # Eventos
+        txt_busca.Bind(wx.EVT_TEXT_ENTER, lambda e: self.executarBusca(txt_busca.GetValue(), frame))
+        btn_buscar.Bind(wx.EVT_BUTTON, lambda e: self.executarBusca(txt_busca.GetValue(), frame))
+        btn_voltar.Bind(
+    wx.EVT_BUTTON,
+    lambda e, f=frame: (f.Destroy(), self.menuBiblia())
+)
+
+
+        frame.Show()
+        txt_busca.SetFocus()
+
+    def executarBusca(self, termo, frame):
+        termo = termo.strip()
+        if not termo:
+            ui.message("Digite algo para buscar.")
+            return
+
+        versoes_selecionadas = [
+            versao for versao, cb in self.checkboxes_busca.items() if cb.GetValue()
+        ]
+
+        if not versoes_selecionadas:
+            ui.message("Selecione ao menos uma versão para buscar.")
+            return
+
+        BuscaBiblica(
+            frame,
+            termo,
+            self.json_files,
+            versoes_selecionadas,
+            self.abrirResultadoBusca,
+            self.menuBiblia
+        )
 
     def selecionarVersao(self, versao, frame):
         """Processa a versão selecionada e continua o fluxo."""
