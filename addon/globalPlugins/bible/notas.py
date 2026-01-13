@@ -97,9 +97,6 @@ class NotasStorage:
 
         sizer.Add(txt_conteudo, 1, wx.EXPAND | wx.ALL, 10)
 
-        # -------------------------
-        # BOTÕES
-        # -------------------------
         btn_editar = wx.Button(panel, label="Editar")
         btn_excluir = wx.Button(panel, label="Excluir")
         btn_lista = wx.Button(panel, label="Lista de Notas")
@@ -113,9 +110,6 @@ class NotasStorage:
 
         sizer.Add(sizer_botoes, 0, wx.ALIGN_CENTER | wx.ALL, 10)
 
-        # -------------------------
-        # AÇÕES
-        # -------------------------
         def abrir_editor(event):
             frame.Close()
             EditorNotaExistente(self, nota, callback_reabrir=self.mostrarNota)
@@ -251,9 +245,6 @@ class NotasManager:
         panel = wx.Panel(frame)
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        # =========================================================
-        # 🔹 BLOCO DE INFORMAÇÕES (ACESSÍVEL AO NVDA)
-        # =========================================================
         info = f"Título: {self.titulo}\n"
         info += f"Versão: {self.versao}\n"
         info += f"{self.livro} {self.capitulo}\n\n"
@@ -271,9 +262,6 @@ class NotasManager:
 
         sizer.Add(txt_info, 0, wx.EXPAND | wx.ALL, 10)
 
-        # =========================================================
-        # 🔹 DESCRIÇÃO (EDITÁVEL E LIDA PELO NVDA)
-        # =========================================================
         self.txt_nota = wx.TextCtrl(
             panel,
             value="",
@@ -282,9 +270,6 @@ class NotasManager:
 
         sizer.Add(self.txt_nota, 1, wx.EXPAND | wx.ALL, 10)
 
-        # =========================================================
-        # 🔹 BOTÕES
-        # =========================================================
         btn_salvar = wx.Button(panel, label="Salvar Nota")
         btn_cancelar = wx.Button(panel, label="Cancelar")
 
@@ -300,7 +285,6 @@ class NotasManager:
         panel.SetSizer(sizer)
         frame.Show()
 
-        # 🔹 garante foco correto para leitura inicial
         txt_info.SetFocus()
 
     def fecharJanela(self, frame):
@@ -356,9 +340,6 @@ class EditorNotaExistente:
         panel = wx.Panel(self.frame)
         sizer = wx.BoxSizer(wx.VERTICAL)
 
-        # =========================================
-        # 🔹 INFORMAÇÕES FIXAS (SOMENTE LEITURA)
-        # =========================================
         info = f"Título: {self.nota['titulo']}\n"
         info += f"Versão: {self.nota['versao']}\n"
         info += f"{self.nota['livro']} {self.nota['capitulo']}\n\n"
@@ -376,9 +357,6 @@ class EditorNotaExistente:
 
         sizer.Add(txt_info, 0, wx.EXPAND | wx.ALL, 10)
 
-        # =========================================
-        # 🔹 DESCRIÇÃO (EDITÁVEL, JÁ PREENCHIDA)
-        # =========================================
         self.txt_descricao = wx.TextCtrl(
             panel,
             value=self.nota["descricao"],
@@ -387,9 +365,6 @@ class EditorNotaExistente:
 
         sizer.Add(self.txt_descricao, 1, wx.EXPAND | wx.ALL, 10)
 
-        # =========================================
-        # 🔹 BOTÕES
-        # =========================================
         btn_salvar = wx.Button(panel, label="Salvar Alteração")
         btn_cancelar = wx.Button(panel, label="Cancelar")
 
@@ -405,7 +380,6 @@ class EditorNotaExistente:
         panel.SetSizer(sizer)
         self.frame.Show()
 
-        # foco correto para NVDA
         txt_info.SetFocus()
 
     def salvar(self, event):
@@ -430,6 +404,5 @@ class EditorNotaExistente:
 
         self.frame.Destroy()
 
-        # 🔹 REABRE A NOTA PARA LEITURA
         if self.callback_reabrir:
             wx.CallLater(0, self.callback_reabrir, self.nota)
