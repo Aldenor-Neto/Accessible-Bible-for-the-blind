@@ -1,21 +1,42 @@
 # Accessible Bible Blind
 
-**Versão:** 2.1
-**Autor:** Aldenor Neto
-**Compatibilidade:** NVDA 2022.4 a 2025.1
+**Autor:** Aldenor Neto  
 
 ---
 
 ## 📖 Descrição
 
-O **Accessible Bible Blind** é um complemento para NVDA que permite a leitura acessível da Bíblia em diferentes versões, oferecendo suporte completo à navegação por teclado e recursos de anotações pessoais.
+O **Accessible Bible Blind** é um complemento para o NVDA desenvolvido para oferecer **leitura totalmente acessível da Bíblia**, com múltiplas versões bíblicas, navegação eficiente por teclado, sistema avançado de anotações e recursos pensados especificamente para usuários com deficiência visual.
 
-A aplicação utiliza um banco de dados local em **JSON**, garantindo acesso rápido e estruturado aos livros, capítulos e versículos de seis versões bíblicas:
+A aplicação funciona inteiramente com **dados locais em formato JSON**, garantindo rapidez, estabilidade e funcionamento offline.
 
-* **Versões católicas**: Ave Maria, Jerusalém
-* **Versões protestantes**: Nova Versão Internacional (NVI), Almeida Corrigida e Fiel, Almeida Revista e Atualizada, Tradução do Novo Mundo
+---
 
-Os arquivos JSON estão organizados dentro do diretório `dataset` na pasta `globalPlugins`. Cada arquivo segue a estrutura:
+## 📚 Versões Bíblicas Disponíveis
+
+Atualmente, o complemento conta com **10 versões da Bíblia**, organizadas por segmento:
+
+### ✝️ Segmento Católico
+- Bíblia **Pastoral**
+- Bíblia **Ave Maria**
+- Bíblia de **Jerusalém**
+- Bíblia **CNBB**
+
+### ✝️ Segmento Evangélico
+- **Almeida Revista e Atualizada (ARA)**
+- **Almeida Revista e Corrigida (ARC)**
+- **Almeida Corrigida e Fiel (ACF)**
+- **Nova Versão Internacional (NVI)**
+- **Nova Tradução na Linguagem de Hoje (NTLH)**
+
+### ✝️ Testemunhas de Jeová
+- **Tradução do Novo Mundo**
+
+---
+
+## 🗂 Estrutura dos Dados
+
+Os arquivos bíblicos estão organizados no diretório `dataset/globalPlugins`, utilizando a seguinte estrutura JSON:
 
 ```json
 [
@@ -31,31 +52,58 @@ Os arquivos JSON estão organizados dentro do diretório `dataset` na pasta `glo
 ]
 ```
 
+Essa estrutura permite acesso direto aos **livros, capítulos e versículos**, facilitando buscas e navegação.
+
 ---
 
 ## ⚙️ Funcionalidades
 
-### Navegação bíblica
+### 📖 Navegação Bíblica
 
-1. Seleção da versão bíblica.
-2. Escolha do livro.
-3. Seleção do capítulo.
-4. Escolha do versículo.
+Fluxo padrão de leitura:
 
-O trecho selecionado é exibido em uma caixa de texto, permitindo:
+1. Seleção da versão bíblica
+2. Escolha do livro
+3. Seleção do capítulo
+4. Leitura dos versículos
 
-* Navegação entre capítulos (anterior/próximo)
-* Troca de versão ou livro
-* Retorno ao menu principal
-* Criação de anotações a partir do trecho bíblico
+Durante a leitura, o usuário pode:
 
-Após o primeiro acesso, é exibido um botão **“Continuar leitura”**, permitindo que o usuário retome o ponto em que parou.
+* Avançar ou retroceder capítulos
+* Trocar de versão bíblica
+* Trocar de livro
+* Retornar ao menu principal
+* Criar anotações a partir de versículos específicos
+
+Após o primeiro acesso, é exibida a opção **“Continuar leitura”**, permitindo retomar exatamente o ponto onde o usuário parou.
 
 ---
 
-### Sistema de Anotações (CRUD)
+### 🔍 Busca por Trecho Bíblico
 
-O complemento inclui um sistema para **criar, visualizar, editar e excluir anotações**, armazenadas no arquivo `notas.json` em `dataset/globalPlugins`. Estrutura do JSON:
+O complemento inclui um sistema de **busca textual** que permite:
+
+* Digitar um termo ou trecho bíblico
+* Selecionar em quais versões a busca será realizada
+  (por padrão, **todas as 10 versões vêm marcadas**)
+* Exibição de uma lista acessível de resultados
+* Abertura direta da leitura bíblica a partir do trecho selecionado
+
+Esse recurso facilita estudos comparativos entre versões.
+
+---
+
+### 📝 Sistema de Anotações (CRUD)
+
+O sistema de anotações permite **criar, visualizar, editar e excluir notas** pessoais.
+
+Principais recursos:
+
+* Seleção de **nenhum, um ou mais versículos** para compor a anotação
+* Associação da nota à versão, livro e capítulo
+* Armazenamento local no arquivo `notas.json`
+
+Estrutura do arquivo de anotações:
 
 ```json
 [
@@ -77,22 +125,51 @@ O complemento inclui um sistema para **criar, visualizar, editar e excluir anota
 
 Fluxo para criação de uma nota:
 
-1. Definição do título da nota
-2. Inserção do conteúdo em uma caixa de edição
-3. Salvamento automático no JSON
+1. Seleção dos versículos desejados
+2. Definição do título da anotação
+3. Inserção do conteúdo descritivo
+4. Salvamento automático no JSON
 
 ---
 
-### Estrutura de Diretórios
+## ⌨️ Teclas de Atalho
 
-O complemento segue a **mesma organização do template oficial do NVDA**
+O complemento oferece **atalhos de teclado para navegação rápida**, todos configuráveis pelo usuário.
+
+### Atalho padrão de ativação
+
+* **NVDA + Shift + I** → Abre o menu principal do Bíblia Acessível
+
+### Atalhos disponíveis durante a leitura
+
+* **NVDA + V** → Trocar versão bíblica
+* **NVDA + L** → Lista de livros
+* **NVDA + ,** → Capítulo anterior
+* **NVDA + .** → Próximo capítulo
+
+### Personalização dos atalhos
+
+Todos os atalhos podem ser **alterados livremente pelo usuário** em:
+
+```
+Menu NVDA → Preferências → Definir comandos → Bíblia Acessível
+```
 
 ---
 
-### Acessibilidade
+## 📁 Estrutura de Diretórios
 
-Todas as funcionalidades foram desenvolvidas priorizando:
+O complemento segue **rigorosamente o template oficial de addons do NVDA**, garantindo compatibilidade, organização e facilidade de manutenção.
 
-* Navegação completa via teclado
-* Compatibilidade total com o NVDA
-* Experiência de leitura fluida para usuários com deficiência visual
+---
+
+## ♿ Acessibilidade
+
+O desenvolvimento do **Accessible Bible Blind** prioriza:
+
+* Navegação 100% via teclado
+* Compatibilidade total com o leitor de telas NVDA
+* Interface simples, clara e objetiva
+* Foco na autonomia do usuário com deficiência visual
+
+---

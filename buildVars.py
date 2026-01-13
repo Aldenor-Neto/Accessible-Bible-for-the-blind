@@ -23,12 +23,14 @@ addon_info = {
 	"addon_summary": _("Accessible Bible Blind"),
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
-	"addon_description": _("""A Palavra de Deus com total acessibilidade e com diferentes versões para seu estudo e intimidade com Deus.
-Ative a aplicação com o atalho NVDA+Shift+I e boa leitura e estudos!"""),
+	"addon_description": _("""Bíblia com leitura totalmente acessível para que você tenha uma maior intimidade com a Palavra de Deus.
+Possui 10 versões da Bíblia, busca por trechos bíblicos e sistema completo de anotações (criar, editar e remover).
+Inclui teclas de atalho para navegação rápida entre capítulos, acesso à lista de livros, escolha de versão e abertura do menu principal.
+Ative a aplicação com NVDA+Shift+I."""),
 	# version
-	"addon_version": "2.2",
+	"addon_version": "3.0",
 	# Author(s)
-	"addon_author": "Aldenor Neto <aldenor05062010@gmail.com>",
+	"addon_author": "Aldenor Neto",
 	# URL for the add-on documentation support
 	"addon_url": "https://github.com/Aldenor-Neto/Accessible-Bible-for-the-blind/blob/main/readme.md",
 	# URL for the add-on repository where the source code can be found
