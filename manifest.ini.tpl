@@ -6,7 +6,7 @@ Inclui teclas de atalho para navegação rápida entre capítulos, acesso à lis
 Ative a aplicação com NVDA+Shift+I."""
 author = "Aldenor Neto"
 url = "https://github.com/Aldenor-Neto/Accessible-Bible-for-the-blind"
-version = "3.0"
+version = "3.0.2"
 docFileName = "readme.md"
 minimumNVDAVersion = "2022.4"
 lastTestedNVDAVersion = "2025.3"
