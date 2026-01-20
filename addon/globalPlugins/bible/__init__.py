@@ -1,6 +1,8 @@
 import wx
 import ui
 import globalPluginHandler
+import webbrowser
+
 
 from . import notas
 
@@ -32,11 +34,34 @@ class GlobalPlugin(globalPluginHandler.GlobalPlugin):
         btn_anotacoes = wx.Button(panel, label="Anotações")
         btn_anotacoes.Bind(wx.EVT_BUTTON, self.abrirAnotacoes)
 
+        btn_fale_conosco = wx.Button(panel, label="Fale Conosco")
+        btn_fale_conosco.Bind(wx.EVT_BUTTON, self.abrirFaleConosco)
+
         sizer.Add(btn_biblias, 0, wx.EXPAND | wx.ALL, 10)
         sizer.Add(btn_anotacoes, 0, wx.EXPAND | wx.ALL, 10)
+        sizer.Add(btn_fale_conosco, 0, wx.EXPAND | wx.ALL, 10)
+
 
         panel.SetSizerAndFit(sizer)
         self.dialog.ShowModal()
+
+    def abrirFaleConosco(self, event):
+        mensagem = (
+            "Você será direcionado para um formulário onde poderá entrar em contato conosco.\n\n"
+            "No formulário você poderá enviar dúvidas, sugestões ou relatar bugs."
+        )
+
+        resposta = wx.MessageBox(
+            mensagem,
+            "Fale Conosco",
+            wx.OK | wx.CANCEL | wx.ICON_INFORMATION
+        )
+
+        if resposta == wx.OK:
+            webbrowser.open(
+                "https://docs.google.com/forms/d/e/1FAIpQLScxAAYPoIF6hq2ZK-FIBUTqfsQixSkwCdtxF475wbfP-tFfSg/viewform?usp=sharing&ouid=104944239672742422494"
+            )
+            self.dialog.Destroy()
 
     def script_listaLivros(self, gesture):
         try:
