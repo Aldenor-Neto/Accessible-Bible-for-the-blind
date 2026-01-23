@@ -28,7 +28,7 @@ Possui 10 versões da Bíblia, busca por trechos bíblicos e sistema completo de
 Inclui teclas de atalho para navegação rápida entre capítulos, acesso à lista de livros, escolha de versão e abertura do menu principal.
 Ative a aplicação com NVDA+Shift+I."""),
 	# version
-	"addon_version": "3.0.3",
+	"addon_version": "3.0.4",
 	# Author(s)
 	"addon_author": "Aldenor Neto",
 	# URL for the add-on documentation support
