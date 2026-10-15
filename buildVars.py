@@ -24,11 +24,11 @@ addon_info = {
 	# Add-on description
 	# Translators: Long description to be shown for this add-on on add-on information from add-ons manager
 	"addon_description": _("""Bíblia com leitura totalmente acessível para que você tenha uma maior intimidade com a Palavra de Deus.
-Possui 10 versões da Bíblia, busca por trechos bíblicos e sistema completo de anotações (criar, editar e remover).
+Possui 19 versões da Bíblia, busca por trechos bíblicos e sistema completo de anotações (criar, editar e remover).
 Inclui teclas de atalho para navegação rápida entre capítulos, acesso à lista de livros, escolha de versão e abertura do menu principal.
 Ative a aplicação com NVDA+Shift+I."""),
 	# version
-	"addon_version": "3.0.4",
+	"addon_version": "4.0",
 	# Author(s)
 	"addon_author": "Aldenor Neto",
 	# URL for the add-on documentation support
@@ -40,7 +40,7 @@ Ative a aplicação com NVDA+Shift+I."""),
 	# Minimum NVDA version supported (e.g. "2018.3.0", minor version is optional)
 	"addon_minimumNVDAVersion": "2022.4",
 	# Last NVDA version supported/tested (e.g. "2018.4.0", ideally more recent than minimum version)
-	"addon_lastTestedNVDAVersion": "2025.3",
+	"addon_lastTestedNVDAVersion": "2026.2",
 	# Add-on update channel (default is None, denoting stable releases,
 	# and for development releases, use "dev".)
 	# Do not change unless you know what you are doing!

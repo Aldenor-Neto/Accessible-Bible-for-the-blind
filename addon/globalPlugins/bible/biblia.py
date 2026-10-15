@@ -32,6 +32,15 @@ class Biblias:
             "Almeida Revista e Corrigida(ARC)": "evangelica - Almeida Revista e corrigida(ARC).json",
             "Nova Versão Internacional(NVI)": "evangelica - Nova Versão Internacional(NVI).json",
             "Nova Tradução na Linguagem de Hoje(NTLH)": "evangelica - Nova Tradução na Linguagem de Hoje(NTLH).json",
+            "Tradução Brasileira(TB)" : "evangelica - tradução brasileira(TB).json",
+            "Bíblia na Linguagem de Hoje(BLH)": "evangelica - biblia na linguagem de hoje -(blh).json",
+            "Nova Versão Transformadora(NVT)" : "evangelica - Nova Versao Transformadora(NVT).json",
+            "Nova Bíblia Viva(NBV)" : "evangelica - Nova Biblia Viva(NBV).json",
+            "Nova Almeida Atualizada(NAA)." : "evangelica - Nova Almeida Atualizada(NAA).json",
+            "King James Fiel(KJF)" : "evangelica - King James Fiel(KJF).json",
+            "King James Atualizada(KJA)" : "evangelica - King James Atualizada(KJA).json",
+            "João Ferreira de Almeida Atualizada(JFAA)" : "evangelica - Joao Ferreira de Almeida Atualizada(JFAA).json",
+            "Almeida Século 21(AS21)" : "evangelica - Almeida Seculo 21(AS21).json",
             "Tradução do novo mundo": "testemunha de jeova - traducao do novo mundo.json"
         }
     
@@ -96,7 +105,16 @@ class Biblias:
                 "Almeida Revista Atualizada(ARA)",
                 "Almeida Revista e Corrigida(ARC)",
                 "Nova Versão Internacional(NVI)",
-                "Nova Tradução na Linguagem de Hoje(NTLH)"
+                "Nova Tradução na Linguagem de Hoje(NTLH)",
+                "Bíblia na Linguagem de Hoje(BLH)",
+                "Tradução Brasileira(TB)",
+                "Nova Versão Transformadora(NVT)",
+                "Nova Bíblia Viva(NBV)",
+                "Nova Almeida Atualizada(NAA)",
+                "King James Fiel(KJF)",
+                "King James Atualizada(KJA)",
+                "João Ferreira de Almeida Atualizada(JFAA)",
+                "Almeida Século 21(AS21)"
             ],
             "Testemunha de Jeová": [
                 "Tradução do novo mundo"
@@ -113,6 +131,15 @@ class Biblias:
             "Almeida Revista e Corrigida(ARC)": "evangelica - Almeida Revista e corrigida(ARC).json",
             "Nova Versão Internacional(NVI)": "evangelica - Nova Versão Internacional(NVI).json",
             "Nova Tradução na Linguagem de Hoje(NTLH)": "evangelica - Nova Tradução na Linguagem de Hoje(NTLH).json",
+            "Bíblia na Linguagem de Hoje(BLH)": "evangelica - biblia na linguagem de hoje -(blh).json",
+            "Tradução Brasileira(TB)": "evangelica - tradução brasileira(TB).json",
+            "Nova Versão Transformadora(NVT)" : "evangelica - Nova Versao Transformadora(NVT).json",
+            "Nova Bíblia Viva(NBV)" : "evangelica - Nova Biblia Viva(NBV).json",
+            "Nova Almeida Atualizada(NAA)" : "evangelica - Nova Almeida Atualizada(NAA).json",
+            "King James Fiel(KJF)" : "evangelica - King James Fiel(KJF).json",
+            "King James Atualizada(KJA)" : "evangelica - King James Atualizada(KJA).json",
+            "João Ferreira de Almeida Atualizada(JFAA)" : "evangelica - Joao Ferreira de Almeida Atualizada(JFAA).json",
+            "Almeida Século 21(AS21)" : "evangelica - Almeida Seculo 21(AS21).json",
             "Tradução do novo mundo": "testemunha de jeova - traducao do novo mundo.json"
         }
 
